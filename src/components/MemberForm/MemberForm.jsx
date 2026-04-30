@@ -96,7 +96,7 @@ export default function MemberForm() {
       errors.iban = `IBAN must be ${ibanLength} digits (German IBAN)`;
     }
     if (!isChecked) {
-      errors.terms = "You must accept Terms and Conditions";
+      errors.terms = "You must accept Terms & Conditions";
       // console.log(errors.terms);
     }
     return errors;
