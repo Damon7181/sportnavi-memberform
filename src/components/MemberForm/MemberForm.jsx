@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+import TermsAndCondition from "../TermsAndCondition/TermsAndCondition";
 import InputAdornment from "@mui/material/InputAdornment";
-import logo from "../assets/Sportnavi-Logo-RGB.svg";
-import Alert from "@mui/material/Alert";
+import logo from "../../assets/Sportnavi-Logo-RGB.svg";
+import SuccessAlert from "../SuccessAlert/SuccessAlert";
 import "./MemberForm.css";
 
 export default function MemberForm() {
-  const intialValues = { firstName: "", lastName: "", email: "", iban: "" };
-  const [formValues, setFormValues] = useState(intialValues);
+  const initialValues = { firstName: "", lastName: "", email: "", iban: "" };
+  const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
 
   //For Checkbox
@@ -35,13 +36,20 @@ export default function MemberForm() {
       console.log(formValues);
 
       setSuccess(true);
-      setFormValues(intialValues);
+      setFormValues(initialValues);
       setIsChecked(false);
     } else {
       setSuccess(false);
     }
   };
 
+  // Alert Timeout
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
   //validations
   const validate = (values) => {
     const errors = {};
@@ -54,7 +62,6 @@ export default function MemberForm() {
     const invalidEntryCheck = /[^0-9\s]/;
     const ibanLength = 20; //Only for German Accounts
 
-    // /^([A-Z]{2}[ '+'\\\\'+'-]?[0-9]{2})(?=(?:[ '+'\\\\'+'-]?[A-Z0-9]){9,30}\$)((?:[ '+'\\\\'+'-]?[A-Z0-9]{3,5}){2,7})([ '+'\\\\'+'-]?[A-Z0-9]{1,3})?\$/i;
     // console.log(values.firstName .length);
     if (!values.firstName) {
       errors.firstName = "First Name is required!";
@@ -85,8 +92,6 @@ export default function MemberForm() {
       errors.iban = "IBAN is required!";
     } else if (invalidEntryCheck.test(values.iban)) {
       errors.iban = "IBAN must only have numbers or spaces ";
-    } else if (!ibanRegex.test(spaceRemoval)) {
-      errors.iban = "IBAN must be 20 Digits (German)";
     } else if (spaceRemoval.length !== ibanLength) {
       errors.iban = `IBAN must be ${ibanLength} digits (German IBAN)`;
     }
@@ -97,18 +102,21 @@ export default function MemberForm() {
     return errors;
   };
 
-  let Submitted = false;
   return (
     <div className="member-registration">
       <div className="container">
         {/* <pre>{JSON.stringify(formValues, undefined, 2)}</pre> */}
         <form onSubmit={handleSubmit}>
-          {success && (
+          {/* {success && (
             <Alert severity="success">Member Added Successfully</Alert>
-          )}
+          )} */}
+          <SuccessAlert show={success} />
 
           <div className="img-container">
-            <img src={logo} alt="Logo" />
+            <a href="https://www.sportnavi.de/" target="_blank">
+              {" "}
+              <img src={logo} alt="Logo" />{" "}
+            </a>
           </div>
           <h1>Member Registration</h1>
           <p className="instruction">Complete a form below</p>
@@ -164,29 +172,11 @@ export default function MemberForm() {
             }}
           />
           <div className="terms-condition">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isChecked}
-                  onChange={(e) => setIsChecked(e.target.checked)}
-                />
-              }
-              label={
-                <span>
-                  I agree to the{" "}
-                  <a href="#Term-of-Services" style={{ color: "black" }}>
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="#Privacy Policy" style={{ color: "blue" }}>
-                    Privacy Policy
-                  </a>
-                </span>
-              }
+            <TermsAndCondition
+              checked={isChecked}
+              onChange={(e) => setIsChecked(e.target.checked)}
+              error={formErrors.terms}
             />
-            {formErrors.terms && (
-              <p className="terms-condition-message">{formErrors.terms}</p>
-            )}
           </div>
           <Button variant="contained" type="submit">
             Submit

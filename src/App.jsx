@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import './App.css'
-import MemberForm from './components/MemberForm.jsx'
+import { useState } from "react";
+import "./App.css";
+import MemberForm from "./components/MemberForm/MemberForm.jsx";
 
 function App() {
   return (
     <>
-<MemberForm></MemberForm>
+      <MemberForm></MemberForm>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
