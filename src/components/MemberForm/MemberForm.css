@@ -52,11 +52,6 @@
  line-height: 0;
 }
 
-/* checkbox color */
-.member-registration form .terms-condition .css-1umw9bq-MuiSvgIcon-root {
-fill: rgb(149 193 30);
-}
-
 /* Responsiveness */
 @media (max-width: 768px) {
   .container {
